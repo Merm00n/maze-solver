@@ -15,31 +15,20 @@ export default function Home() {
     [3, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
   ];
 
-  const heuristic = {
-    "6,0": 8, // Départ
-    "6,3": 6,
-    "4,3": 6,
-    "4,1": 6,
-    "4,4": 7,
-    "2,1": 4,
-    "2,0": 12,
-    "2,2": 7,
-    "0,0": 15,
-    "0,2": 18,
-    "1,4": 6,
-    "0,4": 8,
-    "1,5": 6,
-    "1,6": 5,
-    "2,6": 4,
-    "6,6": 8,
-    "6,11": 6,
-    "2,8": 3,
-    "0,8": 5,
-    "0,9": 5,
-    "4,8": 2,
-    "4,11": 1,
-    "0,11": 0, // Destination
+  const goal = { row: 0, col: 11 };
+  
+  const calculateHeuristic = (x, y, goalX, goalY) => {
+    return Math.abs(goalX - x) + Math.abs(goalY - y);
   };
+
+  const heuristic = {};
+  for (let row = 0; row < initialMaze.length; row++) {
+    for (let col = 0; col < initialMaze[0].length; col++) {
+      if (initialMaze[row][col] !== 1) {
+        heuristic[`${row},${col}`] = calculateHeuristic(row, col, goal.row, goal.col);
+      }
+    }
+  }
 
   const [maze, setMaze] = useState(initialMaze);
   const [robotPos, setRobotPos] = useState({ row: 6, col: 0 });
@@ -67,7 +56,7 @@ export default function Home() {
 
     gCost[startRow][startCol] = 0;
     fCost[startRow][startCol] = heuristic[`${startRow},${startCol}`] || 0;
-
+ 
     const openSet = [[startRow, startCol, fCost[startRow][startCol]]];
 
     let found = false;
